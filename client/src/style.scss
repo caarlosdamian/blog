@@ -89,7 +89,7 @@ $lightGreen: #b9e7e7;
             cursor: pointer;
           }
 
-          .write{
+          .write {
             background-color: $lightGreen;
             width: 50px;
             height: 50px;
@@ -100,13 +100,26 @@ $lightGreen: #b9e7e7;
             font-weight: 300;
             border: 1px solid white;
 
-            &:hover{
+            &:hover {
               color: teal;
               background-color: white;
               border: 1px solid teal;
             }
           }
         }
+      }
+    }
+    // footer
+    footer {
+      margin-top: 100px;
+      padding: 20px;
+      background-color: $lightGreen;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      img {
+        height: 50px;
       }
     }
   }
