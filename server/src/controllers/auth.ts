@@ -2,7 +2,7 @@ import { db } from "../db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-export const register = (req: any, res: any) => {
+export const register = (req:any, res:any) => {
   //CHECK EXISTING USER
   const q = "SELECT * FROM users WHERE email = ? OR username = ?";
 
@@ -24,36 +24,39 @@ export const register = (req: any, res: any) => {
   });
 };
 
-export const login = (req: any, res: any) => {
-  const query = "SELECT * FROM users WHERE email = ?";
-  db.query(query, [req.body.email], (err, data) => {
+export const login = (req:any, res:any) => {
+  //CHECK USER
+
+  const q = "SELECT * FROM users WHERE email = ?";
+
+  db.query(q, [req.body.email], (err, data) => {
     if (err) return res.status(500).json(err);
     if (data.length === 0) return res.status(404).json("User not found!");
 
-    // check password is correct
-    const validPassword = bcrypt.compareSync(
+    //Check password
+    const isPasswordCorrect = bcrypt.compareSync(
       req.body.password,
       data[0].password
     );
-    if (!validPassword)
-      return res.status(400).json("Invalid password or username!");
 
-    const { password, ...otherInfo } = data[0];
+    if (!isPasswordCorrect)
+      return res.status(400).json("Wrong username or password!");
 
     const token = jwt.sign({ id: data[0].id }, "jwtkey");
+    const { password, ...other } = data[0];
+
     res
-      .cookie("access_token", token, { httpOnly: true })
+      .cookie("access_token", token, {
+        httpOnly: true,
+      })
       .status(200)
-      .json(otherInfo);
+      .json({user:other,token});
   });
 };
 
-export const logout = (req: any, res: any) => {
-  res
-    .clearCookie("access_token", {
-      sameSite: "none",
-      secure: true,
-    })
-    .status(200)
-    .json("Logged out!");
+export const logout = (req:any, res:any) => {
+  res.clearCookie("access_token",{
+    sameSite:"none",
+    secure:true
+  }).status(200).json("User has been logged out.")
 };
