@@ -35,7 +35,8 @@ export const login = (req: any, res: any) => {
       req.body.password,
       data[0].password
     );
-    if (!validPassword)return res.status(400).json("Invalid password or username!");
+    if (!validPassword)
+      return res.status(400).json("Invalid password or username!");
 
     const { password, ...otherInfo } = data[0];
 
@@ -47,4 +48,12 @@ export const login = (req: any, res: any) => {
   });
 };
 
-export const logout = (req: any, res: any) => {};
+export const logout = (req: any, res: any) => {
+  res
+    .clearCookie("access_token", {
+      sameSite: "none",
+      secure: true,
+    })
+    .status(200)
+    .json("Logged out!");
+};
