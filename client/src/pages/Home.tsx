@@ -22,19 +22,25 @@ export const Home = () => {
     getPosts();
   }, [cat, location, token]);
 
+  const getText = (text: string) => {
+    const doc = new DOMParser().parseFromString(text, "text/html");
+
+    return doc.body.textContent || "";
+  };
+
   return (
     <div className="home">
       <div className="posts">
         {posts.map((item) => (
           <div className="post" key={item.id}>
             <div className="img">
-              <img src={item.img} alt={item.desc} />
+              <img src={`./uploads/${item.img}`} alt={item.desc} />
             </div>
             <div className="content">
               <Link className="link" to={`/post/${item.id}`}>
                 <h1>{item.title}</h1>
               </Link>
-              <p>{item.desc}</p>
+              <p>{getText(item.desc)}</p>
               <button>Read More</button>
             </div>
           </div>

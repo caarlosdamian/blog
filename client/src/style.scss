@@ -9,6 +9,7 @@ $lightGreen: #b9e7e7;
 .app {
   display: flex;
   justify-content: center;
+
   .container {
     width: 1024px;
     .link {
@@ -258,7 +259,7 @@ $lightGreen: #b9e7e7;
           flex-direction: column;
           gap: 10px;
           img {
-            width: 100%;
+            width: 350px;
             height: 200px;
             object-fit: cover;
           }

@@ -30,7 +30,7 @@ export const Menu = ({ cat = "art" }: Props) => {
       <h1>Other posts you may like</h1>
       {posts?.map((item) => (
         <div className="post" key={item.id}>
-          <img src={item.img} alt={item.img} />
+          <img src={`../uploads/${item.img}`} alt={item.img} />
           <h2>{item.title}</h2>
           <button>Read More</button>
         </div>

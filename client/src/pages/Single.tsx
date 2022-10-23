@@ -8,6 +8,7 @@ import { iPostJoint } from "../interfaces";
 import axios from "axios";
 import moment from "moment";
 import { AuthContext } from "../context/authContext";
+import DOMPurify from "dompurify";
 
 export const Single = () => {
   const [post, setPost] = useState<iPostJoint>();
@@ -16,7 +17,6 @@ export const Single = () => {
   const navigate = useNavigate();
   const id = location.pathname.split("/")[2];
 
-  console.log(token);
 
   useEffect(() => {
     const getPosts = async () => {
@@ -46,7 +46,7 @@ export const Single = () => {
   return (
     <div className="single">
       <div className="content">
-        <img src={post?.img} alt="postImg" />
+        <img src={`../uploads/${post?.img}`} alt="postImg" />
         <div className="user">
           <img
             src={post?.userImg || "https://i.imgur.com/6VBx3io.png"}
@@ -58,7 +58,7 @@ export const Single = () => {
           </div>
           {currentUser?.username === post?.username && (
             <div className="edit">
-              <Link to={`/write?edit=2`}>
+              <Link to={`/write?edit=${post?.id}`} state={post}>
                 <img src={edit} alt={edit} />
               </Link>
               <img onClick={handleDelete} src={deleteI} alt={deleteI} />
@@ -66,7 +66,11 @@ export const Single = () => {
           )}
         </div>
         <h1>{post?.title}</h1>
-        {post?.desc}
+        <p
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(post ? post.desc : ""),
+          }}
+        ></p>
       </div>
       <div className="menu">
         <Menu cat={post?.cat} />

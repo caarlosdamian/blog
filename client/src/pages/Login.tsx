@@ -4,13 +4,12 @@ import { AuthContext } from "../context/authContext";
 import "../style.scss";
 
 export const Login = () => {
-  const { currentUser, login } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
   });
 
-  console.log(currentUser);
   const [error, setError] = useState<any>("");
   const navigate = useNavigate();
 
