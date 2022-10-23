@@ -1,11 +1,13 @@
 import { db } from "../db";
+import jwt from "jsonwebtoken";
+import { send } from "process";
 
 export const addPost = (req: any, res: any) => {};
 
 export const getPosts = (req: any, res: any) => {
+  const token = req.headers.token;
+  if (!token) return res.status(401).json("You are not authenticated!");
 
-  const token = req.cookies.acces_token;
-  console.log(token);
   const query = req.query.cat
     ? "SELECT * FROM posts WHERE cat = ?"
     : "SELECT * FROM posts";
@@ -17,20 +19,33 @@ export const getPosts = (req: any, res: any) => {
 };
 
 export const getPost = (req: any, res: any) => {
-  const query =
-    "SELECT `username`,`title`,`desc`,users.img AS userImg, posts.img, `date`, posts.id FROM users INNER JOIN posts ON users.id=posts.uid WHERE posts.id = ?";
-  db.query(query, [req.params.id], (err: any, data: any) => {
-    if (err) return res.status(500).json(err);
-    return res.status(200).json(data[0]);
+  const token = req.headers.token;
+  if (!token) return res.status(401).json("You are not authenticated!");
+
+  jwt.verify(token, "jwtkey", (err: any, decoded: any) => {
+    if (err) return res.status(403).json("Token not valid!");
+
+    const query =
+      "SELECT `username`,`title`,`desc`,users.img AS userImg, posts.img,`cat`, `date`, posts.id FROM users INNER JOIN posts ON users.id=posts.uid WHERE posts.id = ?";
+    db.query(query, [req.params.id], (err: any, data: any) => {
+      if (err) return res.status(500).json(err);
+      return res.status(200).json(data[0]);
+    });
   });
 };
 
 export const deletePost = (req: any, res: any) => {
+  const token = req.headers.token;
+  if (!token) return res.status(401).json("You are not authenticated!");
 
-  const query = "DELETE FROM posts WHERE id = ?";
-  db.query(query, [req.params.id], (err: any, data: any) => {
-    if (err) return res.status(500).json(err);
-    return res.status(200).json(data);
+  jwt.verify(token, "jwtkey", (err: any, decoded: any) => {
+    if (err) return res.status(403).json("Token not valid!");
+
+    const query = "DELETE FROM posts WHERE id = ? AND uid = ?";
+    db.query(query, [req.params.id, decoded.id], (err: any, data: any) => {
+      if (err) return res.status(500).json(err);
+      return res.status(200).json(data);
+    });
   });
 };
 
