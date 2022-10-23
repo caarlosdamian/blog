@@ -10,7 +10,9 @@ export const Navbar = () => {
     <div className="navbar">
       <div className="container">
         <div className="logo">
-          <img src={logo} alt="logo" />
+          <Link className="link" to="/">
+            <img src={logo} alt="logo" />
+          </Link>
         </div>
         <div className="links">
           <Link to="/?cat=art" className="link">
@@ -35,7 +37,9 @@ export const Navbar = () => {
           {currentUser !== null ? (
             <span onClick={logout}>Logout</span>
           ) : (
-            <Link to="/login" className="link">Login</Link>
+            <Link to="/login" className="link">
+              Login
+            </Link>
           )}
           <span className="write">
             <Link to="/write" className="link">

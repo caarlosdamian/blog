@@ -6,11 +6,15 @@ export const AuthContext = createContext<iAuthContext>({
   currentUser: null,
   login: (inputs: iInputs) => {},
   logout: () => {},
+  token: "",
 });
 
 export const AuthContexProvider = ({ children }: any) => {
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(localStorage.getItem("user")!) || null
+  );
+  const [token, setToken] = useState(
+    JSON.parse(localStorage.getItem("token")!) || null
   );
 
   const login = async (inputs: any) => {
@@ -18,7 +22,8 @@ export const AuthContexProvider = ({ children }: any) => {
       "http://localhost:8800/api/auth/login",
       inputs
     );
-    setCurrentUser(res.data);
+    setCurrentUser(res.data.user);
+    setToken(res.data.token);
   };
 
   const logout = async () => {
@@ -28,10 +33,11 @@ export const AuthContexProvider = ({ children }: any) => {
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(currentUser));
-  }, [currentUser]);
+    localStorage.setItem("token", JSON.stringify(token));
+  }, [currentUser,token]);
 
   return (
-    <AuthContext.Provider value={{ currentUser, login, logout }}>
+    <AuthContext.Provider value={{ token,currentUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
