@@ -1,20 +1,26 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { AuthContext } from "../context/authContext";
 import { iPost } from "../interfaces";
 import "../style.scss";
 
 export const Home = () => {
   const [posts, setPosts] = useState<iPost[]>([]);
+  const { token } = useContext(AuthContext);
   const location = useLocation();
   const cat = location.search;
   useEffect(() => {
     const getPosts = async () => {
-      const res = await axios.get(`http://localhost:8800/api/posts/${cat}`);
+      const res = await axios.get(`http://localhost:8800/api/posts/${cat}`, {
+        headers: {
+          token: `${token}`,
+        },
+      });
       setPosts(res.data);
     };
     getPosts();
-  }, [cat, location]);
+  }, [cat, location, token]);
 
   return (
     <div className="home">

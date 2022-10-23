@@ -11,30 +11,38 @@ import { AuthContext } from "../context/authContext";
 
 export const Single = () => {
   const [post, setPost] = useState<iPostJoint>();
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, token } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
   const id = location.pathname.split("/")[2];
 
-  console.log();
+  console.log(token);
 
   useEffect(() => {
     const getPosts = async () => {
-      const res = await axios.get(`http://localhost:8800/api/posts/${id}`);
+      const res = await axios.get(`http://localhost:8800/api/posts/${id}`, {
+        headers: {
+          token: `${token}`,
+        },
+      });
       setPost(res.data);
     };
     getPosts();
-  }, [location,id]);
+  }, [location, id, token]);
 
   const handleDelete = async () => {
     try {
-      axios.delete(`http://localhost:8800/api/posts/${id}`);
+      axios.delete(`http://localhost:8800/api/posts/${id}`, {
+        headers: {
+          token: `${token}`,
+        },
+      });
       navigate("/");
     } catch (error) {
       console.log(error);
     }
   };
-  console.log(post);
+
   return (
     <div className="single">
       <div className="content">
@@ -61,7 +69,7 @@ export const Single = () => {
         {post?.desc}
       </div>
       <div className="menu">
-        <Menu />
+        <Menu cat={post?.cat} />
       </div>
     </div>
   );

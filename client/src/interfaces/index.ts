@@ -11,6 +11,7 @@ export type iPost = {
   desc: string;
   img?: string;
   date: string;
+  cat:string;
 };
 
 export interface iPostJoint extends iPost {
