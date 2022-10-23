@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo3.png";
+import { AuthContext } from "../context/authContext";
 import "../style.scss";
 
 export const Navbar = () => {
+  const { currentUser, logout } = useContext(AuthContext);
   return (
     <div className="navbar">
       <div className="container">
@@ -29,8 +31,12 @@ export const Navbar = () => {
           <Link to="/?cat=food" className="link">
             <h6>FOOD</h6>
           </Link>
-          <span>Carlos</span>
-          <span>Logout</span>
+          <span>{currentUser?.username}</span>
+          {currentUser !== null ? (
+            <span onClick={logout}>Logout</span>
+          ) : (
+            <Link to="/login" className="link">Login</Link>
+          )}
           <span className="write">
             <Link to="/write" className="link">
               Write

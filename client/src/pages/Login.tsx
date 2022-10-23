@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { AuthContext } from "../context/authContext";
 import "../style.scss";
 
 export const Login = () => {
+  const { currentUser, login } = useContext(AuthContext);
   const [inputs, setInputs] = useState({
-    username: "",
+    email: "",
     password: "",
   });
 
+  console.log(currentUser);
   const [error, setError] = useState<any>("");
   const navigate = useNavigate();
 
@@ -19,13 +21,12 @@ export const Login = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
-    axios
-      .post("http://localhost:8800/api/auth/login", inputs)
-      .then(() => navigate("/"))
-      .catch((err) => {
-        setError(err.response.data);
-      });
+    try {
+      await login(inputs);
+      navigate("/");
+    } catch (error: any) {
+      setError(error?.response?.data);
+    }
   };
   return (
     <div className="auth">
@@ -35,8 +36,8 @@ export const Login = () => {
           required
           type="email"
           name="email"
-          id="username"
-          placeholder="Email"
+          id="email"
+          placeholder="text"
           onChange={handleChange}
         />
         <input
